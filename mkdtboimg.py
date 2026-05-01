@@ -454,25 +454,22 @@ class Dtbo(object):
         Raises:
             ValueError if unrecognized compression format is found.
         """
-        compress_zlib = zlib.compressobj()  #  zlib
-        compress_gzip = zlib.compressobj(zlib.Z_DEFAULT_COMPRESSION,
-                                         zlib.DEFLATED, self._GZIP_COMPRESSION_WBITS)  #  gzip
-        compression_obj_dict = {
-            CompressionFormat.NO_COMPRESSION: None,
-            CompressionFormat.ZLIB_COMPRESSION: compress_zlib,
-            CompressionFormat.GZIP_COMPRESSION: compress_gzip,
-        }
-
-        if compression_format not in compression_obj_dict:
-            ValueError("Bad compression format %d" % compression_format)
-
-        if compression_format is CompressionFormat.NO_COMPRESSION:
+        if compression_format == CompressionFormat.NO_COMPRESSION:
             dt_entry = dt_entry_file.read()
+            return dt_entry, len(dt_entry)
+
+        if compression_format == CompressionFormat.ZLIB_COMPRESSION:
+            compression_object = zlib.compressobj()
+        elif compression_format == CompressionFormat.GZIP_COMPRESSION:
+            compression_object = zlib.compressobj(zlib.Z_DEFAULT_COMPRESSION,
+                                                  zlib.DEFLATED,
+                                                  self._GZIP_COMPRESSION_WBITS)
         else:
-            compression_object = compression_obj_dict[compression_format]
-            dt_entry_file.seek(0)
-            dt_entry = compression_object.compress(dt_entry_file.read())
-            dt_entry += compression_object.flush()
+            raise ValueError("Bad compression format %d" % compression_format)
+
+        dt_entry_file.seek(0)
+        dt_entry = compression_object.compress(dt_entry_file.read())
+        dt_entry += compression_object.flush()
         return dt_entry, len(dt_entry)
 
     def add_dt_entries(self, dt_entries):
