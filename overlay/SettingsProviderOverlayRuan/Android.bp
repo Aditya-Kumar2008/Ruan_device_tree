@@ -1,0 +1,36 @@
+//
+// SPDX-FileCopyrightText: The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+
+// Ruan (Redmi Pad Pro) only has EEA SKU for now.
+// Poco/XIG05/CN variants commented out until those SKUs are confirmed.
+
+runtime_resource_overlay {
+    name: "SettingsProviderOverlayRuan",
+    manifest: "AndroidManifest-redmi.xml",
+    resource_dirs: ["res-redmi"],
+    vendor: true,
+}
+
+runtime_resource_overlay {
+    name: "SettingsProviderOverlayRuanEEA",
+    manifest: "AndroidManifest-redmi.xml",
+    resource_dirs: ["res-redmi"],
+    vendor: true,
+}
+
+// TODO: verify for ruan - uncomment when additional SKUs are confirmed
+// runtime_resource_overlay {
+//     name: "SettingsProviderOverlayRuanPoco",
+//     manifest: "AndroidManifest-poco.xml",
+//     resource_dirs: ["res-poco"],
+//     vendor: true,
+// }
+// runtime_resource_overlay {
+//     name: "SettingsProviderOverlayRuanRedmiCN",
+//     manifest: "AndroidManifest-redmiCn.xml",
+//     resource_dirs: ["res-redmiCn"],
+//     vendor: true,
+// }
+

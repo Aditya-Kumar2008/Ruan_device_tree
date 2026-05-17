@@ -1,0 +1,4 @@
+# sepolicy for POCO Pad 5G (ruan) - genfscon rules
+# Using AOSP default sysfs contexts
+# genfscon rules are defined in system/sepolicy/vendor/genfs_contexts
+# Device-specific overrides can be added here if needed
