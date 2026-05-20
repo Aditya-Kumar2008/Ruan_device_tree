@@ -18,6 +18,9 @@ $(call inherit-product, vendor/lineage/config/common_full_tablet.mk)
 # Inherit from ruan device
 $(call inherit-product, device/xiaomi/ruan/device.mk)
 
+# Inherit vendor blobs
+$(call inherit-product-if-exists, vendor/xiaomi/ruan/ruan-vendor.mk)
+
 # Device identifiers - from stock ROM build.prop
 PRODUCT_NAME := lineage_ruan
 PRODUCT_DEVICE := ruan
@@ -28,11 +31,14 @@ PRODUCT_SYSTEM_NAME := ruan_global
 PRODUCT_SYSTEM_DEVICE := ruan
 
 # Build prop overrides - matching stock ROM
-PRODUCT_BUILD_PROP_OVERRIDES +=     BuildDesc="ruan_in_global-user 15 OS2.0.203.0.VFSINXM release-keys"     BuildFingerprint=Xiaomi/ruan_in_global/ruan:15/OS2.0.203.0.VFSINXM:user/release-keys     DeviceName=$(PRODUCT_SYSTEM_DEVICE)     DeviceProduct=$(PRODUCT_SYSTEM_NAME)
+PRODUCT_BUILD_PROP_OVERRIDES += \
+    BuildDesc="ruan_in_global-user 15 OS2.0.203.0.VFSINXM release-keys" \
+    BuildFingerprint=Xiaomi/ruan_in_global/ruan:15/OS2.0.203.0.VFSINXM:user/release-keys \
+    DeviceName=$(PRODUCT_SYSTEM_DEVICE) \
+    DeviceProduct=$(PRODUCT_SYSTEM_NAME)
 
 # Tablet characteristics
 PRODUCT_CHARACTERISTICS := tablet
 
 # GMS properties
 PRODUCT_GMS_CLIENTID_BASE := android-xiaomi
-DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += device/xiaomi/ruan/vintf/framework_compatibility_matrix.xml
