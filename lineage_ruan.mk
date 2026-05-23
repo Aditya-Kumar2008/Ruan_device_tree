@@ -30,10 +30,10 @@ PRODUCT_MODEL := POCO Pad 5G
 PRODUCT_SYSTEM_NAME := ruan_global
 PRODUCT_SYSTEM_DEVICE := ruan
 
-# Build prop overrides - matching stock ROM
+# Build prop overrides - matching stock ROM OS3.0.1.0 (Android 16)
 PRODUCT_BUILD_PROP_OVERRIDES += \
-    BuildDesc="ruan_in_global-user 15 OS2.0.203.0.VFSINXM release-keys" \
-    BuildFingerprint=Xiaomi/ruan_in_global/ruan:15/OS2.0.203.0.VFSINXM:user/release-keys \
+    BuildDesc="ruan_in_global-user 16 OS3.0.1.0.WFSINXM release-keys" \
+    BuildFingerprint=Xiaomi/ruan_in_global/ruan:16/OS3.0.1.0.WFSINXM:user/release-keys \
     DeviceName=$(PRODUCT_SYSTEM_DEVICE) \
     DeviceProduct=$(PRODUCT_SYSTEM_NAME)
 

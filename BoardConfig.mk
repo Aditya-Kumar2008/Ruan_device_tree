@@ -86,14 +86,14 @@ $(foreach sku, CN GL JP, \
 
 DEVICE_FRAMEWORK_MANIFEST_FILE += $(DEVICE_PATH)/configs/hidl/framework_manifest.xml
 
-# Kernel - Prebuilt GKI approach
-# Stock boot.img: kernel=44MB + ramdisk=1MB (header v4)
+# Kernel - Prebuilt GKI approach (from stock OS3.0.1.0 - Android 16)
+# Stock boot.img: kernel=45MB + ramdisk=1.3MB + boot_signature=4KB (header v4)
 # Stock recovery.img: ramdisk=22MB, NO kernel (uses kexec from boot)
-# Stock vendor_boot.img: vendor_ramdisk=12MB + dtb=4MB (header v4)
+# Stock vendor_boot.img: vendor_ramdisk=14MB(LZ4) + dtb=4.7MB (header v4)
+# Stock bootconfig: androidboot.hardware=qcom androidboot.memcg=1 androidboot.usbcontroller=a600000.dwc3
 TARGET_FORCE_PREBUILT_KERNEL := true
 TARGET_NO_KERNEL_OVERRIDE := true
 TARGET_PREBUILT_KERNEL := $(KERNEL_PATH)/kernel
-TARGET_KERNEL_SOURCE := kernel/xiaomi/sm7435
 PRODUCT_COPY_FILES += $(TARGET_PREBUILT_KERNEL):kernel
 
 # Prebuilt DTB/DTBO
@@ -156,7 +156,7 @@ BOARD_BOOTCONFIG := \
 BOARD_BOOTIMAGE_PARTITION_SIZE := 100663296          # 96 MB - stock boot.img actual size
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 104857600      # 100 MB - stock recovery.img actual size
 BOARD_VENDOR_BOOTIMAGE_PARTITION_SIZE := 100663296   # 96 MB - stock vendor_boot.img actual size
-BOARD_DTBOIMG_PARTITION_SIZE := 25165824             # 24 MB - stock dtbo.img actual size
+BOARD_DTBOIMG_PARTITION_SIZE := 24117248             # 23 MB - stock dtbo.img actual size (OS3)
 BOARD_VBMETAIMAGE_PARTITION_SIZE := 8192             # 8 KB - stock vbmeta.img actual size
 BOARD_SUPER_PARTITION_SIZE := 9126805504             # ~8.5 GB
 BOARD_FLASH_BLOCK_SIZE := 131072                     # (BOARD_KERNEL_PAGESIZE * 64)
