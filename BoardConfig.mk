@@ -145,15 +145,19 @@ BOARD_BOOTCONFIG := \
     androidboot.usbcontroller=a600000.dwc3 \
     androidboot.force_normal_boot=1
 
-# Partitions - EXACT match with stock GPT (rawprogram4.xml)
-# Verified from stock ROM GPT backup: sectors * 4096 bytes/sector
+# Partitions - sizes from stock ROM actual image files
+# GPT partition table reserves MORE space than the actual image file
+# What matters for building is the ACTUAL image size the partition must hold
+# boot.img = 96 MB (actual stock image file), GPT reserves 128 MB
+# vbmeta.img = 8 KB (actual stock image file), GPT reserves 64 KB
+# The BOARD_*_PARTITION_SIZE sets the max image size the partition can hold
 -include vendor/lineage/config/BoardConfigReservedSize.mk
 
-BOARD_BOOTIMAGE_PARTITION_SIZE := 134217728          # 128 MB (32768 sectors) - stock GPT
-BOARD_RECOVERYIMAGE_PARTITION_SIZE := 104857600      # 100 MB (25600 sectors) - stock GPT
-BOARD_VENDOR_BOOTIMAGE_PARTITION_SIZE := 100663296   #  96 MB (24576 sectors) - stock GPT
-BOARD_DTBOIMG_PARTITION_SIZE := 25165824             #  24 MB (6144 sectors) - stock GPT
-BOARD_VBMETAIMAGE_PARTITION_SIZE := 65536            #  64 KB (16 sectors) - stock GPT
+BOARD_BOOTIMAGE_PARTITION_SIZE := 100663296          # 96 MB - stock boot.img actual size
+BOARD_RECOVERYIMAGE_PARTITION_SIZE := 104857600      # 100 MB - stock recovery.img actual size
+BOARD_VENDOR_BOOTIMAGE_PARTITION_SIZE := 100663296   # 96 MB - stock vendor_boot.img actual size
+BOARD_DTBOIMG_PARTITION_SIZE := 25165824             # 24 MB - stock dtbo.img actual size
+BOARD_VBMETAIMAGE_PARTITION_SIZE := 8192             # 8 KB - stock vbmeta.img actual size
 BOARD_SUPER_PARTITION_SIZE := 9126805504             # ~8.5 GB
 BOARD_FLASH_BLOCK_SIZE := 131072                     # (BOARD_KERNEL_PAGESIZE * 64)
 
