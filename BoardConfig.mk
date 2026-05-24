@@ -94,6 +94,7 @@ DEVICE_FRAMEWORK_MANIFEST_FILE += $(DEVICE_PATH)/configs/hidl/framework_manifest
 TARGET_FORCE_PREBUILT_KERNEL := true
 TARGET_NO_KERNEL_OVERRIDE := true
 TARGET_PREBUILT_KERNEL := $(KERNEL_PATH)/kernel
+TARGET_KERNEL_SOURCE := $(KERNEL_PATH)/kernel-headers
 PRODUCT_COPY_FILES += $(TARGET_PREBUILT_KERNEL):kernel
 
 # Prebuilt DTB/DTBO
@@ -113,10 +114,16 @@ BOOT_KERNEL_MODULES := $(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD)
 
 TARGET_BOARD_INFO_FILE := device/xiaomi/ruan/board-info.txt
 
-# Boot headers - match stock (both boot and vendor_boot use header v4)
+# Boot headers
+# boot.img and vendor_boot.img use header v4 (GKI)
+# recovery.img uses header v2 (separate partition, no kernel)
 BOARD_BOOT_HEADER_VERSION := 4
 BOARD_VENDOR_BOOT_HEADER_VERSION := 4
 BOARD_MKBOOTIMG_ARGS := --header_version $(BOARD_BOOT_HEADER_VERSION)
+
+# Recovery uses v2 header (separate recovery partition, NOT GKI v4)
+BOARD_RECOVERY_HEADER_VERSION := 2
+BOARD_MKRECOVERYIMG_ARGS := --header_version $(BOARD_RECOVERY_HEADER_VERSION)
 
 # GKI boot image configuration
 # boot.img = GKI kernel + small init ramdisk (matches stock: 44MB kernel + 1MB ramdisk)
@@ -214,12 +221,13 @@ VENDOR_SECURITY_PATCH := 2025-12-01
 
 # Verified Boot
 BOARD_AVB_ENABLE := true
-BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 3
+BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 2
 
 BOARD_AVB_RECOVERY_KEY_PATH := external/avb/test/data/testkey_rsa4096.pem
 BOARD_AVB_RECOVERY_ALGORITHM := SHA256_RSA4096
 BOARD_AVB_RECOVERY_ROLLBACK_INDEX := 1
 BOARD_AVB_RECOVERY_ROLLBACK_INDEX_LOCATION := 1
+BOARD_AVB_RECOVERY_ADD_HASH_FOOTER_ARGS += --prop com.android.build.recovery.fingerprint:$(BUILD_FINGERPRINT_FROM_FILE)
 
 BOARD_AVB_VBMETA_SYSTEM := system system_ext product
 BOARD_AVB_VBMETA_SYSTEM_KEY_PATH := external/avb/test/data/testkey_rsa4096.pem
@@ -245,5 +253,5 @@ WPA_SUPPLICANT_VERSION := VER_0_8_X
 # Vendor
 include vendor/xiaomi/ruan/BoardConfigVendor.mk
 
-# Prebuilt kernel headers for out-of-tree modules
-TARGET_PREBUILT_KERNEL_HEADERS := device/xiaomi/ruan-kernel/kernel-headers
+# Recovery — separate partition (not using boot as recovery)
+BOARD_USES_RECOVERY_AS_BOOT := false

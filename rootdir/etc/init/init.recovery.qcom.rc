@@ -1,0 +1,10 @@
+# init.recovery.qcom.rc
+# Qualcomm recovery init for ruan (SM7435)
+
+on init
+    start vendor.rmt_storage
+    start vendor.tftp_server
+
+on fs
+    wait /dev/block/platform/soc/1d84000.ufshc
+    symlink /dev/block/platform/soc/1d84000.ufshc /dev/block/bootdevice

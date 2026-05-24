@@ -450,3 +450,66 @@ PRODUCT_COPY_FILES += \
 # fstab in vendor_ramdisk (CRITICAL for first stage mount)
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/etc/fstab.qcom:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/first_stage_ramdisk/fstab.qcom
+# Health
+PRODUCT_PACKAGES += \
+android.hardware.health-service.qti \
+android.hardware.health-service.qti_recovery
+
+# Power
+PRODUCT_PACKAGES += \
+android.hardware.power-service.lineage-libperfmgr \
+libqti-perfd-client
+
+PRODUCT_COPY_FILES += \
+$(LOCAL_PATH)/configs/power/powerhint.json:$(TARGET_COPY_OUT_VENDOR)/etc/powerhint.json
+
+# Memtrack
+PRODUCT_PACKAGES += \
+vendor.qti.hardware.memtrack-service
+
+# IPACM
+PRODUCT_PACKAGES += \
+ipacm \
+IPACM_cfg.xml \
+IPACM_Filter_cfg.xml
+
+# Init RCs
+PRODUCT_PACKAGES += \
+charger_fw_fstab.qti \
+fstab.qcom \
+init.ruan.rc \
+init.qcom.rc \
+init.recovery.qcom.rc \
+init.target.rc \
+ueventd-odm.rc \
+ueventd.qcom.rc
+
+# Euicc
+PRODUCT_PACKAGES += \
+XiaomiEuicc
+
+# IFAA
+PRODUCT_PACKAGES += \
+IFAAService
+
+# Telephony stub
+PRODUCT_PACKAGES += \
+xiaomi-telephony-stub
+
+PRODUCT_BOOT_JARS += \
+xiaomi-telephony-stub
+
+# Soong namespaces
+PRODUCT_SOONG_NAMESPACES += \
+$(LOCAL_PATH) \
+hardware/google/interfaces \
+hardware/google/pixel \
+hardware/lineage/interfaces/power-libperfmgr \
+hardware/qcom-caf/common/libqti-perfd-client \
+hardware/qcom-caf/wlan \
+hardware/xiaomi
+
+# Recovery init RC
+PRODUCT_COPY_FILES += \
+$(LOCAL_PATH)/rootdir/init.recovery.qcom.rc:root/init.recovery.qcom.rc \
+$(LOCAL_PATH)/rootdir/etc/init/init.recovery.qcom.rc:system/etc/init/init.recovery.qcom.rc
