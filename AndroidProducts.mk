@@ -4,6 +4,9 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-PRODUCT_MAKEFILES :=     $(LOCAL_DIR)/lineage_ruan.mk
+PRODUCT_MAKEFILES := \
+    lineage_ruan:$(LOCAL_DIR)/lineage_ruan.mk
 
-COMMON_LUNCH_CHOICES :=     lineage_ruan-ap4a-userdebug     lineage_ruan-ap4a-eng     lineage_ruan-trunk_staging-userdebug
+COMMON_LUNCH_CHOICES := \
+    lineage_ruan-userdebug \
+    lineage_ruan-eng
