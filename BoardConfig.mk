@@ -131,6 +131,7 @@ BOARD_MKRECOVERYIMG_ARGS := --header_version $(BOARD_RECOVERY_HEADER_VERSION)
 # vendor_boot.img = vendor ramdisk + DTB + cmdline + bootconfig
 BOARD_USES_GENERIC_KERNEL_IMAGE := true
 BOARD_EXCLUDE_KERNEL_FROM_RECOVERY_IMAGE := true
+BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT := true
 BOARD_RAMDISK_USE_LZ4 := true
 BOARD_MOVE_GSI_AVB_KEYS_TO_VENDOR_BOOT := true
 
@@ -165,6 +166,7 @@ BOARD_RECOVERYIMAGE_PARTITION_SIZE := 104857600      # 100 MB - stock recovery.i
 BOARD_VENDOR_BOOTIMAGE_PARTITION_SIZE := 100663296   # 96 MB - stock vendor_boot.img actual size
 BOARD_DTBOIMG_PARTITION_SIZE := 24117248             # 23 MB - stock dtbo.img actual size (OS3)
 BOARD_VBMETAIMAGE_PARTITION_SIZE := 8192             # 8 KB - stock vbmeta.img actual size
+BOARD_VBMETA_SYSTEMIMAGE_PARTITION_SIZE := 4096  # 4 KB - stock vbmeta_system.img actual size
 BOARD_SUPER_PARTITION_SIZE := 9126805504             # ~8.5 GB
 BOARD_FLASH_BLOCK_SIZE := 131072                     # (BOARD_KERNEL_PAGESIZE * 64)
 
