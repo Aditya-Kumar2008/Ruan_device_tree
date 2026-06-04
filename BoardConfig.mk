@@ -5,7 +5,6 @@
 #
 
 DEVICE_PATH := device/xiaomi/ruan
-KERNEL_PATH := $(DEVICE_PATH)-kernel
 
 BUILD_BROKEN_DUP_RULES := true
 
@@ -18,8 +17,6 @@ AB_OTA_PARTITIONS := \
     recovery \
     system \
     system_ext \
-    vbmeta \
-    vbmeta_system \
     vendor \
     vendor_boot \
     vendor_dlkm
@@ -70,114 +67,103 @@ DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += \
     hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml \
     hardware/xiaomi/vintf/xiaomi_framework_compatibility_matrix.xml \
     device/xiaomi/ruan/vintf/framework_compatibility_matrix.xml
-
 DEVICE_MANIFEST_FILE := \
     $(DEVICE_PATH)/configs/hidl/manifest.xml \
     hardware/qcom-caf/sm8450/audio/primary-hal/configs/common/manifest_non_qmaa.xml \
     hardware/qcom-caf/sm8450/audio/primary-hal/configs/common/manifest_non_qmaa_extn.xml
-
 ODM_MANIFEST_SKUS += IN
 ODM_MANIFEST_IN_FILES := $(DEVICE_PATH)/configs/hidl/manifest_nonfc.xml
-
 $(foreach sku, CN GL JP, \
     $(eval ODM_MANIFEST_SKUS += $(sku)) \
     $(eval ODM_MANIFEST_$(sku)_FILES += \
         $(DEVICE_PATH)/configs/hidl/manifest_nfc.xml))
-
 DEVICE_FRAMEWORK_MANIFEST_FILE += $(DEVICE_PATH)/configs/hidl/framework_manifest.xml
 
-# Kernel - Prebuilt GKI approach (from stock OS3.0.1.0 - Android 16)
-# Stock boot.img: kernel=45MB + ramdisk=1.3MB + boot_signature=4KB (header v4)
-# Stock recovery.img: ramdisk=22MB, NO kernel (uses kexec from boot)
-# Stock vendor_boot.img: vendor_ramdisk=14MB(LZ4) + dtb=4.7MB (header v4)
-# Stock bootconfig: androidboot.hardware=qcom androidboot.memcg=1 androidboot.usbcontroller=a600000.dwc3
-TARGET_FORCE_PREBUILT_KERNEL := true
-TARGET_NO_KERNEL_OVERRIDE := true
-TARGET_PREBUILT_KERNEL := $(KERNEL_PATH)/kernel
-TARGET_KERNEL_SOURCE := $(KERNEL_PATH)/kernel-headers
-PRODUCT_COPY_FILES += $(TARGET_PREBUILT_KERNEL):kernel
-
-# Prebuilt DTB/DTBO
-BOARD_USES_DT := true
-BOARD_PREBUILT_DTBOIMAGE := $(KERNEL_PATH)/dtbo.img
-
-# Kernel modules (from prebuilt)
-BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(KERNEL_PATH)/modules/vendor_dlkm/modules.blocklist
-BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_PATH)/modules/vendor_dlkm/modules.load))
-BOARD_VENDOR_RAMDISK_KERNEL_MODULES_BLOCKLIST_FILE := $(KERNEL_PATH)/modules/vendor_ramdisk/modules.blocklist
-BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_PATH)/modules/vendor_ramdisk/modules.load))
-BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_PATH)/modules/vendor_ramdisk/modules.load.recovery))
-BOOT_KERNEL_MODULES := $(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD)
-
-TARGET_BOARD_INFO_FILE := device/xiaomi/ruan/board-info.txt
-
-# Boot headers
-# boot.img and vendor_boot.img use header v4 (GKI)
-# recovery.img uses header v2 (separate partition, no kernel)
-BOARD_BOOT_HEADER_VERSION := 4
-BOARD_VENDOR_BOOT_HEADER_VERSION := 4
-BOARD_MKBOOTIMG_ARGS := --header_version $(BOARD_BOOT_HEADER_VERSION)
-
-# Recovery uses v4 header (matching stock recovery.img - separate partition, no kernel)
-BOARD_RECOVERY_HEADER_VERSION := 4
-BOARD_MKRECOVERYIMG_ARGS := --header_version $(BOARD_RECOVERY_HEADER_VERSION)
-
-# GKI boot image configuration
-# boot.img = GKI kernel + small init ramdisk (matches stock: 44MB kernel + 1MB ramdisk)
-# recovery.img = recovery ramdisk ONLY, no kernel (uses kexec from boot.img)
-# vendor_boot.img = vendor ramdisk + DTB + cmdline + bootconfig
-BOARD_USES_GENERIC_KERNEL_IMAGE := true
-BOARD_EXCLUDE_KERNEL_FROM_RECOVERY_IMAGE := true
-BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT := true
+# Kernel — GKI build from source (like garnet)
+BOARD_INCLUDE_DTB_IN_BOOTIMG := true
 BOARD_RAMDISK_USE_LZ4 := true
-BOARD_MOVE_GSI_AVB_KEYS_TO_VENDOR_BOOT := true
+TARGET_NEEDS_DTBOIMAGE := true
 
-# Kernel base/page
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_PAGESIZE := 4096
+BOARD_KERNEL_IMAGE_NAME := Image
 
-# Kernel cmdline (vendor_boot holds the real cmdline; boot.img has empty cmdline)
+TARGET_KERNEL_ADDITIONAL_FLAGS := TARGET_PRODUCT=ruan
+TARGET_KERNEL_SOURCE := kernel/xiaomi/sm7435
+TARGET_KERNEL_CONFIG := \
+    gki_defconfig \
+    vendor/parrot_GKI.config \
+    vendor/ruan_GKI.config \
+    vendor/debugfs.config
+
+BOARD_BOOT_HEADER_VERSION := 4
+BOARD_MKBOOTIMG_ARGS := --header_version $(BOARD_BOOT_HEADER_VERSION)
+
+BOARD_USES_GENERIC_KERNEL_IMAGE := true
+BOARD_USES_QCOM_MERGE_DTBS_SCRIPT := true
+
 BOARD_KERNEL_CMDLINE := \
     video=vfb:640x400,bpp=32,memsize=3072000 \
     disable_dma32=on \
     bootinfo.fingerprint=$(LINEAGE_VERSION) \
     swinfo.fingerprint=$(LINEAGE_VERSION)
 
-# Bootconfig
 BOARD_BOOTCONFIG := \
     androidboot.hardware=qcom \
     androidboot.memcg=1 \
     androidboot.usbcontroller=a600000.dwc3 \
     androidboot.force_normal_boot=1
 
-# Partitions - sizes from stock ROM actual image files
-# GPT partition table reserves MORE space than the actual image file
-# What matters for building is the ACTUAL image size the partition must hold
-# boot.img = 96 MB (actual stock image file), GPT reserves 128 MB
-# vbmeta.img = 8 KB (actual stock image file), GPT reserves 64 KB
-# The BOARD_*_PARTITION_SIZE sets the max image size the partition can hold
+# Kernel modules — build from source (like garnet)
+TARGET_KERNEL_EXT_MODULE_ROOT := kernel/xiaomi/sm7435-modules
+TARGET_KERNEL_EXT_MODULES := \
+    qcom/opensource/mmrm-driver \
+    qcom/opensource/audio-kernel \
+    qcom/opensource/camera-kernel \
+    qcom/opensource/cvp-kernel \
+    qcom/opensource/dataipa/drivers/platform/msm \
+    qcom/opensource/datarmnet/core \
+    qcom/opensource/datarmnet-ext/aps \
+    qcom/opensource/datarmnet-ext/offload \
+    qcom/opensource/datarmnet-ext/shs \
+    qcom/opensource/datarmnet-ext/perf \
+    qcom/opensource/datarmnet-ext/perf_tether \
+    qcom/opensource/datarmnet-ext/sch \
+    qcom/opensource/datarmnet-ext/wlan \
+    qcom/opensource/display-drivers/msm \
+    qcom/opensource/eva-kernel \
+    qcom/opensource/video-driver \
+    qcom/opensource/wlan/qcacld-3.0/.qca6750
+
+# Kernel module load lists
+BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(DEVICE_PATH)/modules/dlkm/modules.blocklist
+BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/modules/dlkm/modules.load))
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES_BLOCKLIST_FILE := $(DEVICE_PATH)/modules/ramdisk/modules.blocklist
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/modules/ramdisk/modules.load))
+BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/modules/ramdisk/modules.load.recovery))
+BOOT_KERNEL_MODULES := $(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD)
+
+TARGET_BOARD_INFO_FILE := device/xiaomi/ruan/board-info.txt
+
+# DTBO
+BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)/dtbo/dtbo.img
+
+# Partitions
 -include vendor/lineage/config/BoardConfigReservedSize.mk
 
-BOARD_BOOTIMAGE_PARTITION_SIZE := 100663296          # 96 MB - stock boot.img actual size
-BOARD_RECOVERYIMAGE_PARTITION_SIZE := 104857600      # 100 MB - stock recovery.img actual size
-BOARD_VENDOR_BOOTIMAGE_PARTITION_SIZE := 100663296   # 96 MB - stock vendor_boot.img actual size
-BOARD_DTBOIMG_PARTITION_SIZE := 24117248             # 23 MB - stock dtbo.img actual size (OS3)
-BOARD_VBMETAIMAGE_PARTITION_SIZE := 8192             # 8 KB - stock vbmeta.img actual size
-BOARD_VBMETA_SYSTEMIMAGE_PARTITION_SIZE := 4096  # 4 KB - stock vbmeta_system.img actual size
-BOARD_SUPER_PARTITION_SIZE := 9126805504             # ~8.5 GB
-BOARD_FLASH_BLOCK_SIZE := 131072                     # (BOARD_KERNEL_PAGESIZE * 64)
+BOARD_BOOTIMAGE_PARTITION_SIZE := 100663296
+BOARD_DTBOIMG_PARTITION_SIZE := 24117248
+BOARD_RECOVERYIMAGE_PARTITION_SIZE := 104857600
+BOARD_SUPER_PARTITION_SIZE := 9126805504
+BOARD_VENDOR_BOOTIMAGE_PARTITION_SIZE := 100663296
+BOARD_FLASH_BLOCK_SIZE := 131072 # (BOARD_KERNEL_PAGESIZE * 64)
 
 BOARD_USES_METADATA_PARTITION := true
 
-# Dynamic partitions (inside super)
-# vbmeta_system is a LOGICAL partition inside super (4KB image), no BOARD_* size needed
 BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := product system system_ext odm vendor vendor_dlkm
-BOARD_QTI_DYNAMIC_PARTITIONS_SIZE := 9122611200      # (BOARD_SUPER_PARTITION_SIZE - 4 MiB)
+BOARD_QTI_DYNAMIC_PARTITIONS_SIZE := 9122611200 # (BOARD_SUPER_PARTITION_SIZE - 4 MiB)
 BOARD_SUPER_PARTITION_GROUPS := qti_dynamic_partitions
 
-# File system types
-# vendor/odm/vendor_dlkm use erofs (stock-like, read-only)
-# product/system/system_ext use ext4 (required for LineageOS A/B OTA updates)
 BOARD_ODMIMAGE_FILE_SYSTEM_TYPE := erofs
 BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := ext4
@@ -196,6 +182,7 @@ TARGET_COPY_OUT_VENDOR_DLKM := vendor_dlkm
 TARGET_BOARD_PLATFORM := parrot
 
 # Recovery
+BOARD_EXCLUDE_KERNEL_FROM_RECOVERY_IMAGE := true
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/etc/fstab.qcom
 TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
 TARGET_USERIMAGES_USE_F2FS := true
@@ -220,13 +207,13 @@ VENDOR_SECURITY_PATCH := 2025-12-01
 
 # Verified Boot
 BOARD_AVB_ENABLE := true
-BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 2
+BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 3
+BOARD_MOVE_GSI_AVB_KEYS_TO_VENDOR_BOOT := true
 
 BOARD_AVB_RECOVERY_KEY_PATH := external/avb/test/data/testkey_rsa4096.pem
 BOARD_AVB_RECOVERY_ALGORITHM := SHA256_RSA4096
 BOARD_AVB_RECOVERY_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
 BOARD_AVB_RECOVERY_ROLLBACK_INDEX_LOCATION := 1
-BOARD_AVB_RECOVERY_ADD_HASH_FOOTER_ARGS += --prop com.android.build.recovery.fingerprint:$(BUILD_FINGERPRINT_FROM_FILE)
 
 BOARD_AVB_VBMETA_SYSTEM := system system_ext product
 BOARD_AVB_VBMETA_SYSTEM_KEY_PATH := external/avb/test/data/testkey_rsa4096.pem
@@ -240,6 +227,7 @@ BOARD_HOSTAPD_DRIVER := NL80211
 BOARD_HOSTAPD_PRIVATE_LIB := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
 BOARD_WPA_SUPPLICANT_DRIVER := NL80211
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
+
 WIFI_HAL_INTERFACE_COMBINATIONS := {{{STA}, 1}, {{AP}, 1}}, {{{STA}, 1}, {{P2P, NAN}, 1}}, {{{AP}, 2}}, {{{STA}, 2}}
 WIFI_DRIVER_DEFAULT := qca_cld3
 WIFI_DRIVER_STATE_CTRL_PARAM := "/dev/wlan"
@@ -252,5 +240,6 @@ WPA_SUPPLICANT_VERSION := VER_0_8_X
 # Vendor
 include vendor/xiaomi/ruan/BoardConfigVendor.mk
 
-# Recovery — separate partition (not using boot as recovery)
-BOARD_USES_RECOVERY_AS_BOOT := false
+# Build broken
+BUILD_BROKEN_PREBUILT_APK_PRODUCT_COPY_FILES := true
+BUILD_BROKEN_VINTF_PRODUCT_COPY_FILES := true
