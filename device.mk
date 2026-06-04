@@ -38,8 +38,8 @@ BOARD_SHIPPING_API_LEVEL := 31
 PRODUCT_SHIPPING_API_LEVEL := $(BOARD_SHIPPING_API_LEVEL)
 
 # Audio
-$(call soong_config_set, android_hardware_audio, run_64bit, true)
-$(call soong_config_set, android_hardware_audio, skip_speaker_layout_channel_mask_field, true)
+$(call soong_config_set, android_hardware_audio, run_64bit, "true")
+$(call soong_config_set, android_hardware_audio, skip_speaker_layout_channel_mask_field, "true")
 
 PRODUCT_PACKAGES += \
     android.hardware.audio@7.0-impl \
@@ -210,7 +210,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     vendor.lineage.health-service.default
 
-$(call soong_config_set,lineage_health,charging_control_supports_bypass,false)
+$(call soong_config_set,lineage_health,charging_control_supports_bypass,"false")
 
 # Media
 PRODUCT_COPY_FILES += \
@@ -309,7 +309,7 @@ PRODUCT_COPY_FILES += \
 
 # Vibrator
 $(call soong_config_set,qti_vibrator,effect_lib,libqtivibratoreffect.xiaomi)
-$(call soong_config_set,qti_vibrator,use_effect_stream,true)
+$(call soong_config_set,qti_vibrator,use_effect_stream,"true")
 
 PRODUCT_PACKAGES += \
     vendor.qti.hardware.vibrator.service
