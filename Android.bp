@@ -3,6 +3,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+// fstab for first-stage init (CRITICAL: must be built as product package)
+// This ensures fstab.qcom is available in product partition for first-stage init
+filegroup {
+    name: "fstab.qcom",
+    srcs: ["rootdir/etc/fstab.qcom"],
+    install_location: "first_stage_ramdisk",
+    product_specific: true,
+}
+
 soong_namespace {
     imports: [
         "hardware/google/interfaces",
