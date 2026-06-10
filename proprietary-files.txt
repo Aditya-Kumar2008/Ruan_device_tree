@@ -1,5 +1,5 @@
 # Proprietary files for Xiaomi Redmi Pad Pro / POCO Pad (ruan)
-# Generated from OS2.0.208.0.VNSEUXM (EEA Global)
+
 
 # APKs
 vendor/app/CACertService/CACertService.apk|875317870c5dcf503eaeebf5971310c04ae5e331
