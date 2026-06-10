@@ -146,7 +146,7 @@ BOOT_KERNEL_MODULES := $(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD)
 TARGET_BOARD_INFO_FILE := device/xiaomi/ruan/board-info.txt
 
 # DTBO
-BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)/dtbo/dtbo.img
+# BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)/dtbo/dtbo.img
 
 # Partitions
 -include vendor/lineage/config/BoardConfigReservedSize.mk
