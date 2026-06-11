@@ -1,8 +1,7 @@
 # LineageOS 23.0 Device Tree — Xiaomi Redmi Pad Pro 5G / POCO Pad 5G (ruan)
 
 > **Status:** Work in Progress — Unofficial
-              Recovery boots by live booting for now
-              Rom - Bootloops (tbh idk why)
+           
 
 ---
 
@@ -94,6 +93,3 @@ mka bacon
 - [garnet-random](https://github.com/garnet-random) — kernel source and base device tree (Redmi Note 13 Pro)
 - [M0Rf30](https://github.com/M0Rf30) for the initial-tree and hardware references
 - [LineageOS](https://github.com/LineageOS) — Android base
-- Ported to dizi/ruan by [nobleactual17](https://github.com/nobleactual17)
-[noble6](https://github.com/noble6) 
-And to all other my testers and supporters
