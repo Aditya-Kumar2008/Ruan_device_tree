@@ -9,3 +9,4 @@ dtbo/dtbo.img filter=lfs diff=lfs merge=lfs -text
 *.odex filter=lfs diff=lfs merge=lfs -text
 *.vdex filter=lfs diff=lfs merge=lfs -text
 *.mbn filter=lfs diff=lfs merge=lfs -text
+*.fw filter=lfs diff=lfs merge=lfs -text
