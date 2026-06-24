@@ -114,10 +114,8 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.bluetooth.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth.xml \
     frameworks/native/data/etc/android.hardware.bluetooth_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth_le.xml
 
-# Boot control — using GKI prebuilt kernel, boot services provided by GKI
-#PRODUCT_PACKAGES += \
-#    android.hardware.boot-service.qti \
-#    android.hardware.boot-service.qti.recovery
+# Boot control — boot@1.2-service provided by vendor blobs
+# PRODUCT_PACKAGES for boot is handled by vendor/xiaomi/ruan/ruan-vendor.mk
 
 # Camera
 PRODUCT_PACKAGES += \
@@ -232,13 +230,23 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.software.ipsec_tunnels.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.ipsec_tunnels.xml
 
 
-# Euicc — XiaomiEuicc overlay not available in this tree
-#PRODUCT_PACKAGES += \
-#    XiaomiEuicc
+# Euicc — handled by vendor blobs
+# XiaomiEuicc overlay not available; skip custom euicc package
 
 # IFAA
 PRODUCT_PACKAGES += \
     IFAAService
+
+# NFC — Redmi Pad Pro NFC variant
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.hardware.nfc.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.xml \
+    frameworks/native/data/etc/android.hardware.nfc.hce.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.hce.xml \
+    frameworks/native/data/etc/android.hardware.nfc.hcef.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.hcef.xml \
+    frameworks/native/data/etc/com.nxp.mifare.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/com.nxp.mifare.xml
+
+PRODUCT_PACKAGES += \
+    NfcNci \
+    Tag
 
 # Sensors
 PRODUCT_PACKAGES += \
@@ -348,38 +356,45 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libvndfwk_detect_jni.qti_vendor
 
-# NcmTethering overlay — not available in this tree
+# Tethering — NcmTetheringOverlay not available, use default
 #PRODUCT_PACKAGES += \
 #    NcmTetheringOverlay
+
+# WiFi
+PRODUCT_PACKAGES += \
+    android.hardware.wifi-service \
+    wpa_supplicant \
+    hostapd \
+    wpa_supplicant.conf
+
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml \
+    frameworks/native/data/etc/android.hardware.wifi.direct.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.direct.xml \
+    frameworks/native/data/etc/android.hardware.wifi.passpoint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.passpoint.xml \
+    frameworks/native/data/etc/android.software.wifi.aware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.wifi.aware.xml
 
 # Touchscreen
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml
 
-# Init RCs
-
-# Euicc
-
-# IFAA
-
 # Telephony stub
 PRODUCT_PACKAGES += \
-xiaomi-telephony-stub
+    xiaomi-telephony-stub
 
 PRODUCT_BOOT_JARS += \
-xiaomi-telephony-stub
+    xiaomi-telephony-stub
 
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
-$(LOCAL_PATH) \
-hardware/google/interfaces \
-hardware/google/pixel \
-hardware/lineage/interfaces/power-libperfmgr \
-hardware/qcom-caf/common/libqti-perfd-client \
-hardware/qcom-caf/wlan \
-hardware/xiaomi
+    $(LOCAL_PATH) \
+    hardware/google/interfaces \
+    hardware/google/pixel \
+    hardware/lineage/interfaces/power-libperfmgr \
+    hardware/qcom-caf/common/libqti-perfd-client \
+    hardware/qcom-caf/wlan \
+    hardware/xiaomi
 
 # Recovery init RC
 PRODUCT_COPY_FILES += \
-$(LOCAL_PATH)/rootdir/init.recovery.qcom.rc:root/init.recovery.qcom.rc \
-$(LOCAL_PATH)/rootdir/etc/init/init.recovery.qcom.rc:system/etc/init/init.recovery.qcom.rc
+    $(LOCAL_PATH)/rootdir/init.recovery.qcom.rc:root/init.recovery.qcom.rc \
+    $(LOCAL_PATH)/rootdir/etc/init/init.recovery.qcom.rc:system/etc/init/init.recovery.qcom.rc

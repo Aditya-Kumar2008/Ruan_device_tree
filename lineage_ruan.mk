@@ -25,20 +25,42 @@ $(call inherit-product-if-exists, vendor/xiaomi/ruan/ruan-vendor.mk)
 PRODUCT_NAME := lineage_ruan
 PRODUCT_DEVICE := ruan
 PRODUCT_MANUFACTURER := Xiaomi
-PRODUCT_BRAND := POCO
-PRODUCT_MODEL := POCO Pad 5G
+PRODUCT_BRAND := Xiaomi
+PRODUCT_MODEL := Redmi Pad Pro
 PRODUCT_SYSTEM_NAME := ruan_global
 PRODUCT_SYSTEM_DEVICE := ruan
 
-# Build prop overrides - matching stock ROM OS3.0.1.0 (Android 16)
+# Build prop overrides - matching stock ROM
 PRODUCT_BUILD_PROP_OVERRIDES += \
-    BuildDesc="ruan_in_global-user 16 OS3.0.1.0.WFSINXM release-keys" \
-    BuildFingerprint=Xiaomi/ruan_in_global/ruan:16/OS3.0.1.0.WFSINXM:user/release-keys \
+    BuildDesc="ruan_in_global-user 15 AP4A.250205.002 release-keys" \
+    BuildFingerprint=Xiaomi/ruan_in_global/ruan:15/AP4A.250205.002:user/release-keys \
     DeviceName=$(PRODUCT_SYSTEM_DEVICE) \
     DeviceProduct=$(PRODUCT_SYSTEM_NAME)
+
+# Eng build options
+ifeq ($(TARGET_BUILD_VARIANT),eng)
+# Eng build: disable optimization, enable debug, su
+PRODUCT_SYSTEM_PROPERTIES += \
+    ro.debuggable=1 \
+    persist.sys.usb.config=mtp,adb \
+    ro.adb.secure=0
+endif
 
 # Tablet characteristics
 PRODUCT_CHARACTERISTICS := tablet
 
 # GMS properties
 PRODUCT_GMS_CLIENTID_BASE := android-xiaomi
+
+# Development / ADB
+PRODUCT_SYSTEM_PROPERTIES += \
+    persist.service.adb.enable=1 \
+    persist.service.debuggable=1 \
+    ro.secure=0
+
+# Enable ADB by default
+ifeq ($(TARGET_BUILD_VARIANT),userdebug)
+PRODUCT_SYSTEM_PROPERTIES += \
+    persist.sys.usb.config=mtp,adb \
+    ro.adb.secure=0
+endif
