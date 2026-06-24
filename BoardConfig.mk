@@ -216,4 +216,5 @@ include vendor/xiaomi/ruan/BoardConfigVendor.mk
 
 # Build broken
 BUILD_BROKEN_PREBUILT_APK_PRODUCT_COPY_FILES := true
+BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
 BUILD_BROKEN_VINTF_PRODUCT_COPY_FILES := true
