@@ -114,10 +114,10 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.bluetooth.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth.xml \
     frameworks/native/data/etc/android.hardware.bluetooth_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth_le.xml
 
-# Boot control
-PRODUCT_PACKAGES += \
-    android.hardware.boot-service.qti \
-    android.hardware.boot-service.qti.recovery
+# Boot control — using GKI prebuilt kernel, boot services provided by GKI
+#PRODUCT_PACKAGES += \
+#    android.hardware.boot-service.qti \
+#    android.hardware.boot-service.qti.recovery
 
 # Camera
 PRODUCT_PACKAGES += \
@@ -232,9 +232,9 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.software.ipsec_tunnels.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.ipsec_tunnels.xml
 
 
-# Euicc
-PRODUCT_PACKAGES += \
-    XiaomiEuicc
+# Euicc — XiaomiEuicc overlay not available in this tree
+#PRODUCT_PACKAGES += \
+#    XiaomiEuicc
 
 # IFAA
 PRODUCT_PACKAGES += \
@@ -348,9 +348,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libvndfwk_detect_jni.qti_vendor
 
-# NcmTethering overlay
-PRODUCT_PACKAGES += \
-    NcmTetheringOverlay
+# NcmTethering overlay — not available in this tree
+#PRODUCT_PACKAGES += \
+#    NcmTetheringOverlay
 
 # Touchscreen
 PRODUCT_COPY_FILES += \
