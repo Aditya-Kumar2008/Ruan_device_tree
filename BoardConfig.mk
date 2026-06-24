@@ -79,74 +79,48 @@ $(foreach sku, CN GL JP, \
         $(DEVICE_PATH)/configs/hidl/manifest_nfc.xml))
 DEVICE_FRAMEWORK_MANIFEST_FILE += $(DEVICE_PATH)/configs/hidl/framework_manifest.xml
 
-# Kernel — GKI build from source (like garnet)
+# Kernel — using prebuilt kernel and modules from ruan-kernel repo (like noble6)
+KERNEL_PATH := $(DEVICE_PATH)-kernel
+
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
 BOARD_RAMDISK_USE_LZ4 := true
 TARGET_NEEDS_DTBOIMAGE := true
-
-BOARD_KERNEL_BASE := 0x00000000
-BOARD_KERNEL_PAGESIZE := 4096
-BOARD_KERNEL_IMAGE_NAME := Image
-
-TARGET_KERNEL_ADDITIONAL_FLAGS := TARGET_PRODUCT=ruan
-TARGET_KERNEL_SOURCE := kernel/xiaomi/sm7435
-TARGET_KERNEL_CONFIG := \
-    gki_defconfig \
-    vendor/parrot_GKI.config \
-    vendor/ruan_GKI.config \
-    vendor/debugfs.config
-
 BOARD_BOOT_HEADER_VERSION := 4
 BOARD_MKBOOTIMG_ARGS := --header_version $(BOARD_BOOT_HEADER_VERSION)
 
-BOARD_USES_GENERIC_KERNEL_IMAGE := true
-BOARD_USES_QCOM_MERGE_DTBS_SCRIPT := true
+TARGET_FORCE_PREBUILT_KERNEL := true
+TARGET_NO_KERNEL_OVERRIDE := true
+TARGET_KERNEL_SOURCE := $(DEVICE_PATH)/stub_kernel
+TARGET_PREBUILT_KERNEL := $(KERNEL_PATH)/kernel
+PRODUCT_COPY_FILES += $(TARGET_PREBUILT_KERNEL):kernel
+TARGET_KERNEL_VERSION := 5.4
+
+BOARD_PREBUILT_DTBIMAGE_DIR := $(KERNEL_PATH)/dtbs
+BOARD_PREBUILT_DTBOIMAGE := $(KERNEL_PATH)/dtbo.img
+BOARD_KERNEL_PAGESIZE := 4096
 
 BOARD_KERNEL_CMDLINE := \
-    video=vfb:640x400,bpp=32,memsize=3072000 \
-    disable_dma32=on \
-    bootinfo.fingerprint=$(LINEAGE_VERSION) \
-    swinfo.fingerprint=$(LINEAGE_VERSION)
+video=vfb:640x400,bpp=32,memsize=3072000 \
+disable_dma32=on \
+bootinfo.fingerprint=$(LINEAGE_VERSION) \
+swinfo.fingerprint=$(LINEAGE_VERSION)
 
 BOARD_BOOTCONFIG := \
-    androidboot.hardware=qcom \
-    androidboot.memcg=1 \
-    androidboot.usbcontroller=a600000.dwc3 \
-    androidboot.force_normal_boot=1
+androidboot.hardware=qcom \
+androidboot.memcg=1 \
+androidboot.usbcontroller=a600000.dwc3 \
+androidboot.force_normal_boot=1
 
-# Kernel modules — build from source (like garnet)
-TARGET_KERNEL_EXT_MODULE_ROOT := kernel/xiaomi/sm7435-modules
-TARGET_KERNEL_EXT_MODULES := \
-    qcom/opensource/mmrm-driver \
-    qcom/opensource/audio-kernel \
-    qcom/opensource/camera-kernel \
-    qcom/opensource/cvp-kernel \
-    qcom/opensource/dataipa/drivers/platform/msm \
-    qcom/opensource/datarmnet/core \
-    qcom/opensource/datarmnet-ext/aps \
-    qcom/opensource/datarmnet-ext/offload \
-    qcom/opensource/datarmnet-ext/shs \
-    qcom/opensource/datarmnet-ext/perf \
-    qcom/opensource/datarmnet-ext/perf_tether \
-    qcom/opensource/datarmnet-ext/sch \
-    qcom/opensource/datarmnet-ext/wlan \
-    qcom/opensource/display-drivers/msm \
-    qcom/opensource/eva-kernel \
-    qcom/opensource/video-driver \
-    qcom/opensource/wlan/qcacld-3.0/.qca6750
-
-# Kernel module load lists
-BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(DEVICE_PATH)/modules/dlkm/modules.blocklist
-BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/modules/dlkm/modules.load))
-BOARD_VENDOR_RAMDISK_KERNEL_MODULES_BLOCKLIST_FILE := $(DEVICE_PATH)/modules/ramdisk/modules.blocklist
-BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/modules/ramdisk/modules.load))
-BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(DEVICE_PATH)/modules/ramdisk/modules.load.recovery))
-BOOT_KERNEL_MODULES := $(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD)
+# Kernel modules (prebuilt from ruan-kernel repo)
+BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(KERNEL_PATH)/modules/vendor_dlkm/modules.blocklist
+BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_PATH)/modules/vendor_dlkm/modules.load))
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES_BLOCKLIST_FILE := $(KERNEL_PATH)/modules/vendor_ramdisk/modules.blocklist
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_PATH)/modules/vendor_ramdisk/modules.load))
+BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_PATH)/modules/vendor_ramdisk/modules.load.recovery))
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES := $(wildcard $(KERNEL_PATH)/modules/vendor_ramdisk/*.ko)
+BOARD_VENDOR_KERNEL_MODULES := $(wildcard $(KERNEL_PATH)/modules/vendor_dlkm/*.ko)
 
 TARGET_BOARD_INFO_FILE := device/xiaomi/ruan/board-info.txt
-
-# DTBO
-# BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)/dtbo/dtbo.img
 
 # Partitions
 -include vendor/lineage/config/BoardConfigReservedSize.mk

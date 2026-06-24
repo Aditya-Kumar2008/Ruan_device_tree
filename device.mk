@@ -232,43 +232,13 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.software.ipsec_tunnels.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.ipsec_tunnels.xml
 
 
-
-# Display
-PRODUCT_PACKAGES += \
-    init.qti.display_boot.rc \
-    init.qti.display_boot.sh
-
-PRODUCT_COPY_FILES += \
-    hardware/qcom-caf/sm8450/display/config/snapdragon_color_libs_config.xml:$(TARGET_COPY_OUT_VENDOR)/etc/snapdragon_color_libs_config.xml
-
-# DRM
-PRODUCT_PACKAGES += \
-    android.hardware.drm-service.clearkey
-
 # Euicc
 PRODUCT_PACKAGES += \
     XiaomiEuicc
 
-# Health
-PRODUCT_PACKAGES += \
-    android.hardware.health-service.qti \
-    android.hardware.health-service.qti_recovery
-
 # IFAA
 PRODUCT_PACKAGES += \
     IFAAService
-
-# Memtrack
-PRODUCT_PACKAGES += \
-    vendor.qti.hardware.memtrack-service
-
-# Power
-PRODUCT_PACKAGES += \
-    android.hardware.power-service.lineage-libperfmgr \
-    libqti-perfd-client
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/power/powerhint.json:$(TARGET_COPY_OUT_VENDOR)/etc/powerhint.json
 
 # Sensors
 PRODUCT_PACKAGES += \
@@ -317,32 +287,6 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_COPY_FILES += \
     vendor/qcom/opensource/vibrator/excluded-input-devices.xml:$(TARGET_COPY_OUT_VENDOR)/etc/excluded-input-devices.xml
-
-# WiFi
-PRODUCT_PACKAGES += \
-    android.hardware.wifi-service \
-    wpa_cli \
-    wpa_supplicant \
-    wpa_supplicant.conf \
-    hostapd \
-    hostapd_cli \
-    libwifi-hal-qcom
-
-PRODUCT_PACKAGES += \
-    firmware_wlan_mac.bin_symlink \
-    firmware_WCNSS_qcom_cfg.ini_symlink
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/wifi/WCNSS_qcom_cfg.ini:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/qca6750/WCNSS_qcom_cfg.ini \
-    $(LOCAL_PATH)/configs/wifi/p2p_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/p2p_supplicant_overlay.conf \
-    $(LOCAL_PATH)/configs/wifi/wpa_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wpa_supplicant_overlay.conf
-
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.wifi.aware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.aware.xml \
-    frameworks/native/data/etc/android.hardware.wifi.direct.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.direct.xml \
-    frameworks/native/data/etc/android.hardware.wifi.passpoint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.passpoint.xml \
-    frameworks/native/data/etc/android.hardware.wifi.rtt.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.rtt.xml \
-    frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml
 
 # Partitions - mount points for firmware etc
 PRODUCT_PACKAGES += \
@@ -396,23 +340,6 @@ SOONG_CONFIG_NAMESPACES += qti_vibrator
 SOONG_CONFIG_qti_vibrator += use_effect_stream
 SOONG_CONFIG_qti_vibrator_use_effect_stream := true
 
-# Keymint
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.keystore.app_attest_key.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.keystore.app_attest_key.xml
-
-# Graphics
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.opengles.aep.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.opengles.aep.xml \
-    frameworks/native/data/etc/android.software.opengles.deqp.level-2021-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.opengles.deqp.level.xml \
-    frameworks/native/data/etc/android.hardware.vulkan.compute-0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.compute-0.xml \
-    frameworks/native/data/etc/android.hardware.vulkan.level-1.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.level-1.xml \
-    frameworks/native/data/etc/android.hardware.vulkan.version-1_1.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.version-1_1.xml \
-    frameworks/native/data/etc/android.software.vulkan.deqp.level-2021-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.vulkan.deqp.level.xml
-
-# Keylayout
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/keylayout/parrot-qrd-snd-card_Button_Jack.kl:$(TARGET_COPY_OUT_ODM)/usr/keylayout/parrot-qrd-snd-card_Button_Jack.kl
-
 # SKU properties
 PRODUCT_PACKAGES += \
     ruan_sku_properties
@@ -420,10 +347,6 @@ PRODUCT_PACKAGES += \
 # QMI
 PRODUCT_PACKAGES += \
     libvndfwk_detect_jni.qti_vendor
-
-# Lineage Health
-PRODUCT_PACKAGES += \
-    vendor.lineage.health-service.default
 
 # NcmTethering overlay
 PRODUCT_PACKAGES += \
@@ -433,62 +356,11 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml
 
-# Network
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.software.ipsec_tunnels.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.ipsec_tunnels.xml
-
-# Telephony permissions
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.telephony.cdma.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.cdma.xml \
-    frameworks/native/data/etc/android.hardware.telephony.gsm.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.gsm.xml \
-    frameworks/native/data/etc/android.hardware.telephony.ims.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.ims.xml \
-    frameworks/native/data/etc/android.software.sip.voip.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.sip.voip.xml
-
-# GPS
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.location.gps.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.location.gps.xml
-
-# Health
-PRODUCT_PACKAGES += \
-android.hardware.health-service.qti \
-android.hardware.health-service.qti_recovery
-
-# Power
-PRODUCT_PACKAGES += \
-android.hardware.power-service.lineage-libperfmgr \
-libqti-perfd-client
-
-PRODUCT_COPY_FILES += \
-$(LOCAL_PATH)/configs/power/powerhint.json:$(TARGET_COPY_OUT_VENDOR)/etc/powerhint.json
-
-# Memtrack
-PRODUCT_PACKAGES += \
-vendor.qti.hardware.memtrack-service
-
-# IPACM
-PRODUCT_PACKAGES += \
-ipacm \
-IPACM_cfg.xml \
-IPACM_Filter_cfg.xml
-
 # Init RCs
-PRODUCT_PACKAGES += \
-charger_fw_fstab.qti \
-fstab.qcom \
-init.ruan.rc \
-init.qcom.rc \
-init.recovery.qcom.rc \
-init.target.rc \
-ueventd-odm.rc \
-ueventd.qcom.rc
 
 # Euicc
-PRODUCT_PACKAGES += \
-XiaomiEuicc
 
 # IFAA
-PRODUCT_PACKAGES += \
-IFAAService
 
 # Telephony stub
 PRODUCT_PACKAGES += \
