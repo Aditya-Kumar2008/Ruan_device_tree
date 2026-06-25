@@ -218,3 +218,8 @@ include vendor/xiaomi/ruan/BoardConfigVendor.mk
 BUILD_BROKEN_PREBUILT_APK_PRODUCT_COPY_FILES := true
 BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
 BUILD_BROKEN_VINTF_PRODUCT_COPY_FILES := true
+
+# Allow missing dependencies (vendor blobs installed via PRODUCT_COPY_FILES
+# don't create module definitions, so source-built HALs that depend on
+# vendor libraries need this to avoid build failures)
+ALLOW_MISSING_DEPENDENCIES := true
