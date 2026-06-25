@@ -223,3 +223,7 @@ BUILD_BROKEN_VINTF_PRODUCT_COPY_FILES := true
 # don't create module definitions, so source-built HALs that depend on
 # vendor libraries need this to avoid build failures)
 ALLOW_MISSING_DEPENDENCIES := true
+
+# Skip VINTF compatibility checks (vendor manifest has duplicate HAL entries
+# from both source-built and prebuilt manifest fragments)
+DISABLE_VINTF_CHECK := true
